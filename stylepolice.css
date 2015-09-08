@@ -38,7 +38,7 @@ body {
     -o-animation: EndOfTheInternet 33s ease infinite;
     animation: EndOfTheInternet 33s ease infinite;
 
-    cursor: pointer;
+    cursor: crosshair;
 
 }
 
