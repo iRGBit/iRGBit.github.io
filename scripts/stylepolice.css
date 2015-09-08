@@ -28,19 +28,16 @@
 
 body{
 
+  overflow-x: hidden;
 
-}
-
-#colorama {
     background: linear-gradient(270deg, #ff00ac, #ffe900, #3ae900, #18c1cf);
-background-size: 800% 800%;
-  -webkit-animation: EndOfTheInternet 33s ease infinite;
-  -moz-animation: EndOfTheInternet 33s ease infinite;
-  -o-animation: EndOfTheInternet 33s ease infinite;
-  animation: EndOfTheInternet 33s ease infinite;
+    background-size: 800% 800%;
 
-  
-}
+    -webkit-animation: EndOfTheInternet 33s ease infinite;
+    -moz-animation: EndOfTheInternet 33s ease infinite;
+    -o-animation: EndOfTheInternet 33s ease infinite;
+    animation: EndOfTheInternet 33s ease infinite;
+  }
 
 p{
   color: #dfdfdf;
@@ -60,7 +57,11 @@ p{
   }
 
 }
-.roo {
-  position: absolute;
-  right: 0px;
+
+.box{
+   height: 100px;
+   width: 100px;
+   background: #FF00FF;
+   position: absolute;
+   right: -100px;
 }
