@@ -28,6 +28,7 @@
 
 body {
     overflow-x: hidden;
+    overflow-y: hidden;
 
     background: linear-gradient(270deg, #ff00ac, #ffe900, #3ae900, #18c1cf);
     background-size: 800% 800%;
