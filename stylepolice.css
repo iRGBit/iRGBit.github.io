@@ -37,8 +37,7 @@ body {
     -moz-animation: EndOfTheInternet 33s ease infinite;
     -o-animation: EndOfTheInternet 33s ease infinite;
     animation: EndOfTheInternet 33s ease infinite;
-
-    cursor: crosshair;
+    cursor: pointer;
 
 }
 
@@ -53,6 +52,7 @@ p{
   line-height: 0.8;
   text-transform: uppercase;
   width: 100%;
+  height: 3000px;
 
   -webkit-user-select: none; /* Chrome/Safari */
   -moz-user-select: none; /* Firefox */
@@ -61,6 +61,7 @@ p{
   -o-user-select: none;
   user-select: none;
 }
+
 
 
 .box{
