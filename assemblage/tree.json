@@ -1,0 +1,39 @@
+{
+    "name": "Assemblage of a Body Area Network",
+    "axes": [
+        {
+            "material role": [
+                "sensors",
+                "actuators",
+                "human body",
+                "non-human body"
+            ]
+        },
+        {
+            "expressive role": [
+                "body movement",
+                "posrture",
+                "emotion"
+            ]
+        },
+        {
+            "linguistic/coding role": [
+                "language",
+                "protocol",
+            ]
+        },
+        {
+            "deterritorializing role": [
+                "low battery",
+                "wrong settings",
+
+            ]
+        },
+        {
+            "territorializing role": [
+                "compatibility",
+                "synchronisation",
+            ]
+        }
+    ]
+}
