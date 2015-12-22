@@ -10,9 +10,9 @@ $.ajax({
             var filename = this.href.replace(window.location.host, "").replace("http:///", "");
             $("#photos").append($("<img src=" + dir + filename + "></img>"));
         });
-    }
+    },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
                   alert("Status: " + textStatus); alert("Error: " + errorThrown);
-              } 
+              }
   });
 });
