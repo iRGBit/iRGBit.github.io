@@ -1,4 +1,4 @@
-$(document).ready(){
+$(document).ready(function() {
 var dir = "img/";
 var fileextension = ".png";
 $.ajax({
