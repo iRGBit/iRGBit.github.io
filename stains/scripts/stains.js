@@ -1,3 +1,4 @@
+$(document).ready(){
 var dir = "img/";
 var fileextension = ".png";
 $.ajax({
@@ -12,4 +13,5 @@ $.ajax({
             $("body").append($("<img src=" + dir + filename + "></img>"));
         });
     }
+  });
 });
