@@ -4,62 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random PDF Display</title>
-    <style>
-        #pdf-container {
-            width: 100%;
-            height: 100vh;
-            overflow: auto;
-        }
-    </style>
 </head>
 <body>
-    <h1>Random PDF Viewer</h1>
-    <div id="pdf-container">
-        <canvas id="pdf-canvas"></canvas>
-    </div>
+    <h1>Loading a Random PDF...</h1>
 
-    <script src="web/viewer.js"></script> <!-- This is the PDF.js viewer -->
     <script>
+        // List of PDF files in the folder
         const pdfFiles = [
-            'pdfs/document1.pdf',
-            'pdfs/document2.pdf',
-            'pdfs/document3.pdf'
+            'knittelbuch/KFbuch-vA.pdf',
+
+            // Add more paths to PDFs as needed
         ];
 
+        // Function to get a random PDF from the list
         function getRandomPDF() {
             const randomIndex = Math.floor(Math.random() * pdfFiles.length);
             return pdfFiles[randomIndex];
         }
 
-        // Load PDF using PDF.js
-        const url = getRandomPDF();
-        const pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'build/pdf.worker.js';
-
-        let pdfDoc = null;
-        let pageNum = 1;
-        const scale = 1.5;
-        const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function renderPage(num) {
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                page.render(renderContext);
-            });
-        }
-
-        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-            pdfDoc = pdfDoc_;
-            renderPage(pageNum);
-        });
+        // Automatically redirect to a random PDF when the page loads
+        window.onload = function() {
+            const randomPDF = getRandomPDF();
+            window.location.href = randomPDF; // Redirects the user to the random PDF
+        };
     </script>
 </body>
 </html>
