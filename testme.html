@@ -3,132 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Page with PDF</title>
+    <title>PDF.js Example</title>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            margin-top: 50px;
-        }
-
-        .image-button {
-            width: 200px;
-            height: 200px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background-size: cover;
-        }
-
-        .image-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .image-button:active {
-            transform: scale(0.95);
-        }
-
-        .scroll-target {
-            margin-top: 50px;
+        #pdf-canvas {
             width: 100%;
-            text-align: center;
-        }
-
-        iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 768px) {
-            iframe {
-                height: 400px; /* Kleinere Höhe für mobile Geräte */
-            }
+            height: auto;
         }
     </style>
 </head>
 <body>
 
-    <h1>Willkommen zur Seite!</h1>
+<h1>PDF Anzeige mit PDF.js</h1>
+<div>
+    <canvas id="pdf-canvas"></canvas>
+</div>
 
-    <div class="button-container">
-        <!-- Button 1: Externe Seite öffnen -->
-        <button class="image-button" style="background-image: url('https://via.placeholder.com/200');" 
-                onclick="window.location.href='https://example.com';">
-            Button 1
-        </button>
+<script>
+    const url = 'knittelbuch/KFbuch-vA.pdf'; // Beispiel-PDF
 
-        <!-- Button 2: Scrollen zum unteren Abschnitt und PDF im iframe laden -->
-        <button class="image-button" style="background-image: url('https://via.placeholder.com/200');" 
-                onclick="scrollAndLoadPDF();">
-            Button 2
-        </button>
-    </div>
+    // PDF.js Globales Objekt initialisieren
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
-    <div class="scroll-target" id="scroll-target">
-        <h2>Freundschaftsbuchseite wird geladen...</h2>
-        <iframe id="pdf-iframe" src="" style="display:none;"></iframe>
-        <div id="pdf-fallback" style="display:none;">
-            <p>Ihr Gerät unterstützt keine PDF-Anzeige. <a id="pdf-link" href="" target="_blank">Klicken Sie hier, um das PDF herunterzuladen.</a></p>
-        </div>
-    </div>
+    // PDF-Worker definieren
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
 
-    <script>
-        // List of PDF files in the folder
-        const pdfFiles = [
-            'knittelbuch/KFbuch-vA.pdf',
-            'knittelbuch/KFbuch-vB.pdf',
-            'knittelbuch/KFbuch-vC.pdf',
-            'knittelbuch/KFbuch-vD.pdf',
-        ];
+    // PDF laden und rendern
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function(pdf) {
+        // Das erste Dokument laden
+        pdf.getPage(1).then(function(page) {
+            const scale = 1.5;
+            const viewport = page.getViewport({scale: scale});
 
-        // Function to get a random PDF from the list
-        function getRandomPDF() {
-            const randomIndex = Math.floor(Math.random() * pdfFiles.length);
-            return pdfFiles[randomIndex];
-        }
+            const canvas = document.getElementById('pdf-canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-        // Function to check if PDFs can be displayed in an iframe
-        function canDisplayPDFs() {
-            const iframe = document.createElement('iframe');
-            iframe.src = 'data:application/pdf;base64,';
-            return (iframe.src.indexOf('pdf') !== -1);
-        }
-
-        // Function to scroll to the target and load a random PDF in an iframe
-        function scrollAndLoadPDF() {
-            document.getElementById('scroll-target').scrollIntoView({ behavior: 'smooth' });
-            setTimeout(function() {
-                const randomPDF = getRandomPDF();
-                const iframe = document.getElementById('pdf-iframe');
-                const fallback = document.getElementById('pdf-fallback');
-                const pdfLink = document.getElementById('pdf-link');
-
-                // Check if the device can display PDFs in an iframe
-                if (canDisplayPDFs()) {
-                    iframe.src = randomPDF;
-                    iframe.style.display = 'block'; // Show iframe after loading PDF
-                } else {
-                    // Fallback: Show the download link if iframe doesn't work
-                    pdfLink.href = randomPDF;
-                    fallback.style.display = 'block'; // Show fallback link
-                }
-            }, 1000); // Small delay for smooth scrolling
-        }
-    </script>
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
+</script>
 
 </body>
 </html>
