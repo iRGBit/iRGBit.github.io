@@ -28,6 +28,7 @@
             border: none;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
         }
 
         .image-button:hover {
@@ -41,6 +42,7 @@
 
         .scroll-target {
             margin-top: 1000px; /* Platz für Scrollen */
+            text-align: center;
         }
     </style>
 </head>
@@ -50,13 +52,15 @@
 
     <div class="button-container">
         <!-- Button 1: Externe Seite öffnen -->
-        <button class="image-button" style="background-image: url('https://via.placeholder.com/200'); background-size: cover;" 
+        <button class="image-button" style="background-image: url('https://via.placeholder.com/200');" 
                 onclick="window.location.href='https://example.com';">
+            Button 1
         </button>
 
         <!-- Button 2: Scrollen zum unteren Abschnitt und PDF laden -->
-        <button class="image-button" style="background-image: url('https://via.placeholder.com/200'); background-size: cover;" 
+        <button class="image-button" style="background-image: url('https://via.placeholder.com/200');" 
                 onclick="scrollAndLoadPDF();">
+            Button 2
         </button>
     </div>
 
