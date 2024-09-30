@@ -56,4 +56,38 @@
 
         <!-- Button 2: Scrollen zum unteren Abschnitt und PDF laden -->
         <button class="image-button" style="background-image: url('https://via.placeholder.com/200'); background-size: cover;" 
-                onclick="scrollAnd
+                onclick="scrollAndLoadPDF();">
+        </button>
+    </div>
+
+    <div class="scroll-target" id="scroll-target">
+        <h2>Freundschaftsbuchseite wird geladen...</h2>
+    </div>
+
+    <script>
+        // List of PDF files in the folder
+        const pdfFiles = [
+            'knittelbuch/KFbuch-vA.pdf',
+            'knittelbuch/KFbuch-vB.pdf',
+            'knittelbuch/KFbuch-vC.pdf',
+            'knittelbuch/KFbuch-vD.pdf',
+        ];
+
+        // Function to get a random PDF from the list
+        function getRandomPDF() {
+            const randomIndex = Math.floor(Math.random() * pdfFiles.length);
+            return pdfFiles[randomIndex];
+        }
+
+        // Function to scroll to the target and load a random PDF
+        function scrollAndLoadPDF() {
+            document.getElementById('scroll-target').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(function() {
+                const randomPDF = getRandomPDF();
+                window.location.href = randomPDF; // Redirects the user to the random PDF
+            }, 1000); // Small delay for smooth scrolling
+        }
+    </script>
+
+</body>
+</html>
