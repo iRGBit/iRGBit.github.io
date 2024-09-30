@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+        }
+
+        .image-button {
+            width: 200px;
+            height: 200px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .image-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-button:active {
+            transform: scale(0.95);
+        }
+
+        .scroll-target {
+            margin-top: 1000px; /* Platz für Scrollen */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Willkommen zur Seite!</h1>
+
+    <div class="button-container">
+        <!-- Button 1: Externe Seite öffnen -->
+        <button class="image-button" style="background-image: url('https://via.placeholder.com/200'); background-size: cover;" 
+                onclick="window.location.href='https://example.com';">
+        </button>
+
+        <!-- Button 2: Scrollen zum unteren Abschnitt -->
+        <button class="image-button" style="background-image: url('https://via.placeholder.com/200'); background-size: cover;" 
+                onclick="document.getElementById('scroll-target').scrollIntoView({ behavior: 'smooth' });">
+        </button>
+    </div>
+
+    <div class="scroll-target" id="scroll-target">
+        <h2>Freundschaftsbuchseite wird geladen...</h2>
+
+        <script>
+            // List of PDF files in the folder
+            const pdfFiles = [
+                'knittelbuch/KFbuch-vA.pdf',
+                'knittelbuch/KFbuch-vB.pdf',
+                'knittelbuch/KFbuch-vC.pdf',
+                'knittelbuch/KFbuch-vD.pdf',
+            ];
+
+            // Function to get a random PDF from the list
+            function getRandomPDF() {
+                const randomIndex = Math.floor(Math.random() * pdfFiles.length);
+                return pdfFiles[randomIndex];
+            }
+
+            // Automatically redirect to a random PDF when the page loads
+            window.onload = function() {
+                const randomPDF = getRandomPDF();
+                window.location.href = randomPDF; // Redirects the user to the random PDF
+            };
+        </script>
+    </div>
+
+</body>
+</html>
