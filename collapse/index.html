@@ -5,183 +5,288 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Design for Collapse (Design Thinking Scenario Generator)</title>
   <meta name="description" content="One-click scenario generator for speculative design: the internet is gone." />
+
+  <!-- Google Fonts (safe, no JS) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
-  :root { color-scheme: light; }
+    :root { color-scheme: light; }
 
-  body {
-    margin: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    background:
-      linear-gradient(135deg, #ff2fb2 0%, #ffef00 50%, #cfcfcf 100%);
-    color: #000;
-  }
+    body {
+      margin: 0;
+      font-family: Inter, Verdana, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.35), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.20), transparent 40%),
+        linear-gradient(135deg, #ff2fb2 0%, #ffef00 48%, #e8e8e8 100%);
+      color: #000;
+    }
 
-  .wrap {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 14px;
-  }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
+    }
 
-  /* WINAMP HEADER */
-  .topbar {
-    background: linear-gradient(#3a3a3a, #1a1a1a);
-    border: 3px solid #000;
-    color: #ffef00;
-    padding: 10px 12px;
-    box-shadow: 4px 4px 0 #000;
-  }
+    /* WINAMP / W2K-ish HEADER */
+    .topbar {
+      background: linear-gradient(#2c2c2c, #101010);
+      border: 3px solid #000;
+      color: #ffef00;
+      padding: 12px 12px;
+      box-shadow: 5px 5px 0 #000;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .topbar h1 {
-    margin: 0;
-    font-size: 18px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    color: #ff2fb2;
-    text-shadow: 2px 2px 0 #000;
-  }
+    .topbar:before{
+      content:"";
+      position:absolute;
+      inset:-50px -60px auto auto;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(255,239,0,.65), transparent 62%);
+      transform: rotate(18deg);
+      pointer-events:none;
+      mix-blend-mode: screen;
+    }
 
-  .topbar .sub {
-    margin-top: 6px;
-    font-size: 12px;
-    color: #ffef00;
-  }
+    .topbar h1 {
+      margin: 0;
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: #ff2fb2;
+      text-shadow: 2px 2px 0 #000;
+      line-height: 1.25;
+    }
 
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 14px;
-    margin-top: 14px;
-  }
+    .topbar .sub {
+      margin-top: 10px;
+      font-size: 18px;
+      font-family: VT323, monospace;
+      color: #ffef00;
+      text-shadow: 1px 1px 0 #000;
+    }
 
-  @media (max-width: 860px) {
-    .grid { grid-template-columns: 1fr; }
-  }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 14px;
+      margin-top: 14px;
+    }
 
-  /* PANEL = Windows 2000 Chrome */
-  .panel {
-    background: #e6e6e6;
-    border: 3px solid #000;
-    box-shadow: 4px 4px 0 #000;
-  }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
 
-  .panel .head {
-    background: linear-gradient(90deg, #ff2fb2 0%, #ffef00 100%);
-    border-bottom: 3px solid #000;
-    padding: 8px 10px;
-    font-weight: bold;
-    font-size: 12px;
-    text-transform: uppercase;
-    color: #000;
-  }
+    /* PANEL = Windows-ish chrome */
+    .panel {
+      background: #e6e6e6;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0 #000;
+    }
 
-  .panel .body {
-    padding: 10px;
-    font-size: 13px;
-  }
+    .panel .head {
+      background: linear-gradient(90deg, #ff2fb2 0%, #ffef00 100%);
+      border-bottom: 3px solid #000;
+      padding: 9px 10px;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-  .note {
-    background: #fff;
-    border: 3px dashed #ff2fb2;
-    padding: 8px 10px;
-    margin: 10px 0 0;
-    font-size: 12px;
-  }
+    /* Fake window controls */
+    .win-controls {
+      display: inline-flex;
+      gap: 6px;
+    }
+    .win-dot {
+      width: 14px; height: 14px;
+      border: 2px solid #000;
+      background: #fff;
+      box-shadow: 2px 2px 0 #000;
+      display: inline-block;
+    }
+    .win-dot.pink { background: #ff2fb2; }
+    .win-dot.yellow { background: #ffef00; }
+    .win-dot.gray { background: #bfbfbf; }
 
-  .btnrow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    margin: 10px 0 12px;
-  }
+    .panel .body {
+      padding: 10px;
+      font-size: 13px;
+    }
 
-  /* WINAMP BUTTONS */
-  button {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 13px;
-    padding: 8px 12px;
-    border: 3px solid #000;
-    cursor: pointer;
-    background: linear-gradient(#ffffff, #bfbfbf);
-    box-shadow: 3px 3px 0 #000;
-    font-weight: bold;
-  }
+    .note {
+      background: #fff;
+      border: 3px dashed #ff2fb2;
+      padding: 10px 10px;
+      margin: 12px 0 0;
+      font-size: 13px;
+      box-shadow: inset 0 0 0 3px rgba(255,239,0,.55);
+    }
 
-  button.primary {
-    background: linear-gradient(#ffef00, #ff2fb2);
-    color: #000;
-  }
+    /* BUTTONS — make them clearly different + “skinned” */
+    .btnrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 10px 0 14px;
+    }
 
-  button.alt {
-    background: linear-gradient(#ffffff, #999999);
-    color: #000;
-  }
+    button {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 11px;
+      padding: 10px 12px;
+      border: 3px solid #000;
+      cursor: pointer;
+      background: linear-gradient(#ffffff, #cfcfcf);
+      box-shadow: 4px 4px 0 #000;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    button:hover { filter: brightness(1.08); }
+    button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000; }
 
-  button:hover {
-    filter: brightness(1.1);
-  }
+    button.primary {
+      background: linear-gradient(#ffef00, #ff2fb2);
+    }
 
-  button:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 #000;
-  }
+    button.alt {
+      background: linear-gradient(#f7f7f7, #9a9a9a);
+    }
 
-  .status {
-    font-size: 12px;
-    color: #ff2fb2;
-    font-weight: bold;
-  }
+    button.weird {
+      background: repeating-linear-gradient(
+        45deg,
+        #ffffff 0px,
+        #ffffff 8px,
+        #ffef00 8px,
+        #ffef00 16px
+      );
+    }
 
-  .pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 8px 0 10px;
-  }
+    .status {
+      font-family: VT323, monospace;
+      font-size: 18px;
+      color: #ff2fb2;
+      font-weight: 700;
+      text-shadow: 1px 1px 0 #000;
+    }
 
-  .pill {
-    background: #ffffff;
-    border: 2px solid #000;
-    padding: 4px 8px;
-    font-size: 12px;
-    box-shadow: 2px 2px 0 #000;
-  }
+    /* CARDS (pills) — make them look like “cards”, not pills */
+    .pills {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 14px;
+    }
+    @media (max-width: 560px) {
+      .pills { grid-template-columns: 1fr; }
+    }
 
-  .scenario {
-    background: #ffffff;
-    border: 3px solid #000;
-    padding: 12px;
-    font-size: 14px;
-    line-height: 1.5;
-    box-shadow: inset 0 0 0 3px #ffef00;
-    white-space: pre-wrap;
-  }
+    .pill {
+      background: #ffffff;
+      border: 3px solid #000;
+      padding: 10px;
+      box-shadow: 4px 4px 0 #000;
+      display: grid;
+      gap: 6px;
+    }
 
-  .small {
-    font-size: 12px;
-    color: #000;
-  }
+    .pill .k {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      color: #111;
+    }
 
-  .footer {
-    margin-top: 14px;
-    font-size: 11px;
-    text-align: center;
-  }
+    .pill .v {
+      font-family: VT323, monospace;
+      font-size: 22px;
+      line-height: 1.05;
+    }
 
-  .footer a {
-    background: #ff2fb2;
-    color: #000;
-    padding: 3px 6px;
-    border: 2px solid #000;
-    text-decoration: none;
-    font-weight: bold;
-  }
+    /* OUTPUT — make it very clear + “below” */
+    .output-wrap {
+      margin-top: 10px;
+      border: 3px solid #000;
+      background: #fff;
+      box-shadow: 5px 5px 0 #000;
+    }
 
-  .footer a:hover {
-    background: #ffef00;
-  }
-</style>
+    .output-head {
+      background: #000;
+      color: #ffef00;
+      padding: 10px;
+      border-bottom: 3px solid #000;
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .output-head .tag {
+      font-family: VT323, monospace;
+      font-size: 18px;
+      color: #ff2fb2;
+      text-shadow: 1px 1px 0 #000;
+      white-space: nowrap;
+    }
+
+    .scenario {
+      padding: 14px;
+      font-family: Inter, Verdana, Arial, Helvetica, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      box-shadow: inset 0 0 0 4px rgba(255,239,0,.55);
+    }
+
+    .small {
+      font-size: 13px;
+      color: #000;
+      margin-top: 10px;
+      border-left: 6px solid #ff2fb2;
+      padding-left: 10px;
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 11px;
+      text-align: center;
+      font-family: VT323, monospace;
+      font-size: 18px;
+    }
+
+    .footer a {
+      background: #ff2fb2;
+      color: #000;
+      padding: 4px 8px;
+      border: 3px solid #000;
+      text-decoration: none;
+      font-weight: 800;
+      box-shadow: 3px 3px 0 #000;
+      display: inline-block;
+    }
+
+    .footer a:hover { background: #ffef00; }
+  </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="topbar">
@@ -192,12 +297,20 @@
     <div class="grid">
       <!-- MAIN -->
       <div class="panel">
-        <div class="head">Scenario Generator</div>
+        <div class="head">
+          <span>Scenario Generator</span>
+          <span class="win-controls" aria-hidden="true">
+            <span class="win-dot pink"></span>
+            <span class="win-dot yellow"></span>
+            <span class="win-dot gray"></span>
+          </span>
+        </div>
+
         <div class="body">
           <div class="btnrow">
-            <button id="regen">Regenerate Scenario</button>
-            <button id="copy">Copy Scenario</button>
-            <button id="rerollOne">Reroll One Card</button>
+            <button class="primary" id="regen">Regenerate Scenario</button>
+            <button class="alt" id="copy">Copy Output</button>
+            <button class="weird" id="rerollOne">Reroll One Card</button>
             <span id="status" class="status"></span>
           </div>
 
@@ -207,9 +320,16 @@
 
           <div id="pills" class="pills" aria-label="Drawn cards"></div>
 
-          <div class="scenario" id="scenario" aria-label="Scenario text"></div>
+          <!-- CLEAR OUTPUT BLOCK -->
+          <div class="output-wrap" aria-label="Scenario output">
+            <div class="output-head">
+              <span>OUTPUT</span>
+              <span class="tag">copy/paste this into your brief</span>
+            </div>
+            <div class="scenario" id="scenario"></div>
+          </div>
 
-          <div class="small" style="margin-top:10px;">
+          <div class="small">
             Tip: Don’t design “the new internet.” Design one artifact from within this world: a service, manual, ritual, policy, device, form, notice, tool, or social workaround.
           </div>
         </div>
@@ -217,12 +337,18 @@
 
       <!-- SIDEBAR -->
       <div class="panel">
-        <div class="head">Base World Condition (stable)</div>
+        <div class="head">
+          <span>Base World Condition (stable)</span>
+          <span class="win-controls" aria-hidden="true">
+            <span class="win-dot gray"></span>
+            <span class="win-dot yellow"></span>
+            <span class="win-dot pink"></span>
+          </span>
+        </div>
         <div class="body small">
           Within 48 hours, bit by bit, global internet infrastructure fails. Major websites become unreachable worldwide. Official explanations conflict. The outage persists.
           <br><br>
           Electricity continues to function in most of Central Europe. The global network does not return. Local systems may or may not operate depending on the scenario.
-          <br><br>
         </div>
       </div>
     </div>
@@ -322,9 +448,7 @@
   };
 
   // State
-  let state = {
-    cards: [] // {label, value}
-  };
+  let state = { cards: [] };
 
   function generate() {
     const cards = [];
@@ -342,15 +466,12 @@
   }
 
   function buildScenarioText() {
-    // Pull values by label
     const infra = state.cards.find(c => c.label === "Infrastructure modifier")?.value || "";
     const socials = state.cards.filter(c => c.label === "Social context").map(c => c.value);
     const political = state.cards.find(c => c.label === "Political tone")?.value || "";
     const population = state.cards.find(c => c.label === "Population focus")?.value || "";
     const tension = state.cards.find(c => c.label === "Tension card")?.value || "";
     const time = state.cards.find(c => c.label === "Time since collapse")?.value || "";
-
-    // Early-2000s directness, but still “studio smart”
     const [s1, s2] = socials.length === 2 ? socials : [socials[0] || "a local community", socials[1] || "a second social context"];
 
     return (
@@ -368,9 +489,9 @@ Design one artifact that would realistically exist here (a tool, service, manual
   function render() {
     pillsEl.innerHTML = "";
     state.cards.forEach((c) => {
-      const el = document.createElement("span");
+      const el = document.createElement("div");
       el.className = "pill";
-      el.textContent = `${c.label}: ${c.value}`;
+      el.innerHTML = `<div class="k">${c.label}</div><div class="v">${c.value}</div>`;
       pillsEl.appendChild(el);
     });
     scenarioEl.textContent = buildScenarioText();
@@ -380,43 +501,41 @@ Design one artifact that would realistically exist here (a tool, service, manual
   // Buttons
   document.getElementById("regen").addEventListener("click", () => {
     generate();
-    statusEl.textContent = "New scenario generated.";
+    statusEl.textContent = "new scenario generated";
     setTimeout(() => statusEl.textContent = "", 1200);
   });
 
   document.getElementById("copy").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(scenarioEl.textContent);
-      statusEl.textContent = "Copied ✓";
+      statusEl.textContent = "copied ✓";
       setTimeout(() => statusEl.textContent = "", 1200);
     } catch (e) {
-      statusEl.textContent = "Copy failed (browser permissions).";
+      statusEl.textContent = "copy failed";
     }
   });
 
   document.getElementById("rerollOne").addEventListener("click", () => {
-    // Pick a random card and reroll it from its deck
     if (!state.cards.length) return generate();
     const i = Math.floor(Math.random() * state.cards.length);
     const card = state.cards[i];
     const deck = DECKS[card.label];
     if (!deck) return;
 
-    // Try to avoid exact same value
     let next = pickOne(deck);
     let guard = 0;
     while (next === card.value && guard < 10) { next = pickOne(deck); guard++; }
 
     state.cards[i] = { ...card, value: next };
     render();
-    statusEl.textContent = `Rerolled: ${card.label}`;
+    statusEl.textContent = `rerolled: ${card.label.toLowerCase()}`;
     setTimeout(() => statusEl.textContent = "", 1200);
   });
 
   document.getElementById("aboutLink").addEventListener("click", (e) => {
     e.preventDefault();
     alert(
-      "Design for Collapse — Information Design, FH JOANNEUM 2026\n\n" +
+      "Design for Collapse — IND@Elevate Vital Signs 2026 (FH JOANNEUM)\n\n" +
       "This page generates a grounded scenario from drawn constraints.\n" +
       "Use it to kick off world-building and artifact design.\n\n" +
       "Tip: Keep it specific, local, and weirdly normal."
