@@ -1,0 +1,396 @@
+<!doctype html>
+ /* Test 1,2,1,2 Design Thinking 2026 */
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Design for Collapse — FH JOANNEUM (Scenario Generator)</title>
+  <meta name="description" content="One-click scenario generator for speculative design: the internet is gone." />
+  <style>
+    :root { color-scheme: light; }
+    body {
+      margin: 0;
+      font-family: Verdana, Arial, Helvetica, sans-serif;
+      background: #c7d2e3;
+      color: #111;
+    }
+
+    /* Page frame */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    /* header */
+    .topbar {
+      background: linear-gradient(#0d2f6f, #081f49);
+      border: 2px solid #000;
+      color: #fff;
+      padding: 10px 12px;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .topbar h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    .topbar .sub {
+      margin-top: 6px;
+      font-size: 12px;
+      opacity: .95;
+    }
+
+    /* “Table layout” feel using divs */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: #f4f6fb;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .panel .head {
+      background: #e6ecf7;
+      border-bottom: 2px solid #000;
+      padding: 8px 10px;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+    }
+    .panel .body {
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .note {
+      background: #fff9c9;
+      border: 1px solid #000;
+      padding: 8px 10px;
+      margin: 10px 0 0;
+      font-size: 12px;
+    }
+
+    /* Old-school buttons */
+    .btnrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0 12px;
+    }
+    button {
+      font-family: Verdana, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      padding: 8px 10px;
+      border: 2px solid #000;
+      background: linear-gradient(#ffffff, #d9d9d9);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+    }
+    button:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #000; }
+    button:hover { filter: brightness(1.02); }
+
+    .status {
+      font-size: 12px;
+      color: #0d2f6f;
+      font-weight: bold;
+      margin-left: 6px;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 10px;
+    }
+    .pill {
+      display: inline-block;
+      background: #fff;
+      border: 1px solid #000;
+      padding: 3px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .scenario {
+      background: #fff;
+      border: 2px dashed #000;
+      padding: 10px;
+      line-height: 1.4;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #333;
+      line-height: 1.35;
+    }
+
+    /* Cute “footer links” vibe */
+    .footer {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #000;
+      text-align: center;
+    }
+    .footer a { color: #081f49; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Design for Collapse — FH JOANNEUM</h1>
+      <div class="sub">One-click scenario generator · “What happens when the internet goes off?” (Graz-aware, Central Europe vibe)</div>
+    </div>
+
+    <div class="grid">
+      <!-- MAIN -->
+      <div class="panel">
+        <div class="head">Scenario Generator</div>
+        <div class="body">
+          <div class="btnrow">
+            <button id="regen">Regenerate Scenario</button>
+            <button id="copy">Copy Scenario</button>
+            <button id="rerollOne">Reroll One Card</button>
+            <span id="status" class="status"></span>
+          </div>
+
+          <div class="note">
+            Draw rules: 1 infrastructure modifier · 2 social contexts · 1 political tone · 1 population focus · 1 tension · 1 time since collapse.
+          </div>
+
+          <div id="pills" class="pills" aria-label="Drawn cards"></div>
+
+          <div class="scenario" id="scenario" aria-label="Scenario text"></div>
+
+          <div class="small" style="margin-top:10px;">
+            Tip: Don’t design “the new internet.” Design one artifact from within this world: a service, manual, ritual, policy, device, form, notice, tool, or social workaround.
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="panel">
+        <div class="head">Base World Condition (stable)</div>
+        <div class="body small">
+          Within 48 hours, bit by bit, global internet infrastructure fails. Major websites become unreachable worldwide. Official explanations conflict. The outage persists.
+          <br><br>
+          Electricity continues to function in most of Central Europe. The global network does not return. Local systems may or may not operate depending on the scenario.
+          <br><br>
+          <strong>Studio vibe:</strong> grounded, everyday, bureaucratic, slightly unsettling. No sci-fi aesthetics required.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      2003 energy, 2026 screen sizes. ✶ <a href="#" id="aboutLink">About</a>
+    </div>
+  </div>
+
+<script>
+  // -----------------------------
+  // Design for Collapse: Card decks
+  // -----------------------------
+  const DECKS = {
+    "Infrastructure modifier": [
+      "Electricity stable in cities, unstable in rural areas",
+      "Mobile networks dead, but university intranets still function",
+      "Government emergency broadcast system only (radio + sirens)",
+      "Banks offline, cash only",
+      "Satellite communication reserved for state use",
+      "City of Graz builds a closed municipal network (Funkfeuer, mur.at)"
+    ],
+    "Social context": [
+      "Dense city district",
+      "Post-social housing estate",
+      "Student shared flat",
+      "Rural mountain village",
+      "Border region",
+      "Co-housing eco project",
+      "Industrial manufacturing town",
+      "Tourism-dependent town",
+      "Commuter suburb",
+      "Aging small town"
+    ],
+    "Political tone": [
+      "Progressive welfare state",
+      "Conservative austerity politics",
+      "Green transition emergency",
+      "Federal vs regional power conflict",
+      "Soft surveillance expansion",
+      "Corporate influence on public services",
+      "Rising nationalist rhetoric",
+      "Strong union presence"
+    ],
+    "Population focus": [
+      "Elderly people living alone",
+      "Cross-border commuters",
+      "Migrant care workers",
+      "Blue collar factory workers",
+      "University students",
+      "Highly educated but precarious creatives",
+      "Undocumented residents",
+      "Farming families",
+      "Public sector employees"
+    ],
+    "Tension card": [
+      "Information scarcity",
+      "Rumor explosion",
+      "Cash shortage",
+      "Food supply disruption",
+      "Radical solidarity networks",
+      "Black market data exchange",
+      "Bureaucratic overload",
+      "Nostalgia economy",
+      "Offline luxury as status",
+      "Religious revival",
+      "Political unrest"
+    ],
+    "Time since collapse": [
+      "48 hours",
+      "2 weeks",
+      "1 year",
+      "2 years",
+      "5 years"
+    ]
+  };
+
+  // Draw rules
+  const DRAW = [
+    { deck: "Infrastructure modifier", count: 1 },
+    { deck: "Social context", count: 2 },
+    { deck: "Political tone", count: 1 },
+    { deck: "Population focus", count: 1 },
+    { deck: "Tension card", count: 1 },
+    { deck: "Time since collapse", count: 1 }
+  ];
+
+  // Helpers
+  const pickOne = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const pickN = (arr, n) => {
+    const copy = [...arr];
+    const out = [];
+    while (out.length < n && copy.length) {
+      out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+    }
+    return out;
+  };
+
+  // State
+  let state = {
+    cards: [] // {label, value}
+  };
+
+  function generate() {
+    const cards = [];
+    for (const rule of DRAW) {
+      const deck = DECKS[rule.deck];
+      if (rule.count === 1) {
+        cards.push({ label: rule.deck, value: pickOne(deck) });
+      } else {
+        const picks = pickN(deck, rule.count);
+        picks.forEach(v => cards.push({ label: rule.deck, value: v }));
+      }
+    }
+    state.cards = cards;
+    render();
+  }
+
+  function buildScenarioText() {
+    // Pull values by label
+    const infra = state.cards.find(c => c.label === "Infrastructure modifier")?.value || "";
+    const socials = state.cards.filter(c => c.label === "Social context").map(c => c.value);
+    const political = state.cards.find(c => c.label === "Political tone")?.value || "";
+    const population = state.cards.find(c => c.label === "Population focus")?.value || "";
+    const tension = state.cards.find(c => c.label === "Tension card")?.value || "";
+    const time = state.cards.find(c => c.label === "Time since collapse")?.value || "";
+
+    // Early-2000s directness, but still “studio smart”
+    const [s1, s2] = socials.length === 2 ? socials : [socials[0] || "a local community", socials[1] || "a second social context"];
+
+    return (
+`In a ${s1.toLowerCase()} + ${s2.toLowerCase()} setting, ${time} after the internet collapse, ${population.toLowerCase()} are navigating a ${political.toLowerCase()} climate where ${tension.toLowerCase()} shapes everyday life — and ${infra.toLowerCase()}.
+
+Design one artifact that would realistically exist here (a tool, service, manual, form, policy, ritual, or workaround).`
+    );
+  }
+
+  // UI
+  const pillsEl = document.getElementById("pills");
+  const scenarioEl = document.getElementById("scenario");
+  const statusEl = document.getElementById("status");
+
+  function render() {
+    pillsEl.innerHTML = "";
+    state.cards.forEach((c) => {
+      const el = document.createElement("span");
+      el.className = "pill";
+      el.textContent = `${c.label}: ${c.value}`;
+      pillsEl.appendChild(el);
+    });
+    scenarioEl.textContent = buildScenarioText();
+    statusEl.textContent = "";
+  }
+
+  // Buttons
+  document.getElementById("regen").addEventListener("click", () => {
+    generate();
+    statusEl.textContent = "New scenario generated.";
+    setTimeout(() => statusEl.textContent = "", 1200);
+  });
+
+  document.getElementById("copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(scenarioEl.textContent);
+      statusEl.textContent = "Copied ✓";
+      setTimeout(() => statusEl.textContent = "", 1200);
+    } catch (e) {
+      statusEl.textContent = "Copy failed (browser permissions).";
+    }
+  });
+
+  document.getElementById("rerollOne").addEventListener("click", () => {
+    // Pick a random card and reroll it from its deck
+    if (!state.cards.length) return generate();
+    const i = Math.floor(Math.random() * state.cards.length);
+    const card = state.cards[i];
+    const deck = DECKS[card.label];
+    if (!deck) return;
+
+    // Try to avoid exact same value
+    let next = pickOne(deck);
+    let guard = 0;
+    while (next === card.value && guard < 10) { next = pickOne(deck); guard++; }
+
+    state.cards[i] = { ...card, value: next };
+    render();
+    statusEl.textContent = `Rerolled: ${card.label}`;
+    setTimeout(() => statusEl.textContent = "", 1200);
+  });
+
+  document.getElementById("aboutLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    alert(
+      "Design for Collapse — FH JOANNEUM\n\n" +
+      "This page generates a grounded scenario from drawn constraints.\n" +
+      "Use it to kick off world-building and artifact design.\n\n" +
+      "Tip: Keep it specific, local, and weirdly normal."
+    );
+  });
+
+  // First run
+  generate();
+</script>
+</body>
+</html>
