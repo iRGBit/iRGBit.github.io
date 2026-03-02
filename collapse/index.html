@@ -30,6 +30,51 @@
       padding: 14px;
     }
 
+    /* SPLASH */
+    .splash {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      z-index: 9999;
+    }
+
+    .splash-inner {
+      width: min(820px, calc(100vw - 28px));
+      border: 3px solid #ff2fb2;
+      box-shadow: 6px 6px 0 #ffef00;
+      padding: 18px;
+      background: radial-gradient(circle at 30% 20%, rgba(255,239,0,.25), transparent 55%);
+      text-align: center;
+    }
+
+    .splash-title {
+      font-family: "Press Start 2P", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.35;
+      color: #ff2fb2;
+      text-shadow: 2px 2px 0 #000;
+      margin: 0 0 14px;
+      text-transform: uppercase;
+    }
+
+    .splash-sub {
+      font-family: VT323, monospace;
+      font-size: 24px;
+      color: #ffef00;
+      margin: 0 0 18px;
+    }
+
+    .splash-note {
+      font-family: Inter, Verdana, Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.85);
+      margin: 0 0 18px;
+      line-height: 1.45;
+    }
+
     /* WINAMP / W2K-ish HEADER */
     .topbar {
       background: linear-gradient(#2c2c2c, #101010);
@@ -133,7 +178,7 @@
       box-shadow: inset 0 0 0 3px rgba(255,239,0,.55);
     }
 
-    /* BUTTONS — make them clearly different + “skinned” */
+    /* BUTTONS — “skinned” */
     .btnrow {
       display: flex;
       flex-wrap: wrap;
@@ -156,14 +201,8 @@
     button:hover { filter: brightness(1.08); }
     button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000; }
 
-    button.primary {
-      background: linear-gradient(#ffef00, #ff2fb2);
-    }
-
-    button.alt {
-      background: linear-gradient(#f7f7f7, #9a9a9a);
-    }
-
+    button.primary { background: linear-gradient(#ffef00, #ff2fb2); }
+    button.alt { background: linear-gradient(#f7f7f7, #9a9a9a); }
     button.weird {
       background: repeating-linear-gradient(
         45deg,
@@ -182,7 +221,7 @@
       text-shadow: 1px 1px 0 #000;
     }
 
-    /* CARDS (pills) — make them look like “cards”, not pills */
+    /* CARDS */
     .pills {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -216,7 +255,7 @@
       line-height: 1.05;
     }
 
-    /* OUTPUT — make it very clear + “below” */
+    /* OUTPUT */
     .output-wrap {
       margin-top: 10px;
       border: 3px solid #000;
@@ -266,7 +305,6 @@
 
     .footer {
       margin-top: 14px;
-      font-size: 11px;
       text-align: center;
       font-family: VT323, monospace;
       font-size: 18px;
@@ -284,11 +322,27 @@
     }
 
     .footer a:hover { background: #ffef00; }
+
+    /* Utility */
+    .hidden { display: none !important; }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+
+  <!-- SPLASH SCREEN -->
+  <div class="splash" id="splash">
+    <div class="splash-inner">
+      <h2 class="splash-title">Design for Collapse</h2>
+      <p class="splash-sub">the internet is gone. you are still here.</p>
+      <p class="splash-note">
+        Click to enter the generator. No cards will be dealt until you press <b>Regenerate Scenario</b>.
+      </p>
+      <button class="primary" id="enterBtn">ENTER COLLAPSE</button>
+    </div>
+  </div>
+
+  <div class="wrap" id="app" aria-hidden="true">
     <div class="topbar">
       <h1>Design for Collapse, IND@Elevate Vital Signs 2026</h1>
       <div class="sub">One-click scenario generator · “And then there was no Internet”</div>
@@ -320,7 +374,6 @@
 
           <div id="pills" class="pills" aria-label="Drawn cards"></div>
 
-          <!-- CLEAR OUTPUT BLOCK -->
           <div class="output-wrap" aria-label="Scenario output">
             <div class="output-head">
               <span>OUTPUT</span>
@@ -450,6 +503,12 @@
   // State
   let state = { cards: [] };
 
+  function clearUI() {
+    pillsEl.innerHTML = "";
+    scenarioEl.textContent = "No scenario yet. Hit “Regenerate Scenario” to deal the cards.";
+    statusEl.textContent = "";
+  }
+
   function generate() {
     const cards = [];
     for (const rule of DRAW) {
@@ -481,7 +540,11 @@ Design one artifact that would realistically exist here (a tool, service, manual
     );
   }
 
-  // UI
+  // UI refs
+  const splashEl = document.getElementById("splash");
+  const appEl = document.getElementById("app");
+  const enterBtn = document.getElementById("enterBtn");
+
   const pillsEl = document.getElementById("pills");
   const scenarioEl = document.getElementById("scenario");
   const statusEl = document.getElementById("status");
@@ -497,6 +560,13 @@ Design one artifact that would realistically exist here (a tool, service, manual
     scenarioEl.textContent = buildScenarioText();
     statusEl.textContent = "";
   }
+
+  // Splash -> App (no cards dealt)
+  enterBtn.addEventListener("click", () => {
+    splashEl.classList.add("hidden");
+    appEl.removeAttribute("aria-hidden");
+    clearUI();
+  });
 
   // Buttons
   document.getElementById("regen").addEventListener("click", () => {
@@ -516,7 +586,12 @@ Design one artifact that would realistically exist here (a tool, service, manual
   });
 
   document.getElementById("rerollOne").addEventListener("click", () => {
-    if (!state.cards.length) return generate();
+    if (!state.cards.length) {
+      statusEl.textContent = "no cards yet — generate first";
+      setTimeout(() => statusEl.textContent = "", 1200);
+      return;
+    }
+
     const i = Math.floor(Math.random() * state.cards.length);
     const card = state.cards[i];
     const deck = DECKS[card.label];
@@ -542,8 +617,8 @@ Design one artifact that would realistically exist here (a tool, service, manual
     );
   });
 
-  // First run
-  generate();
+  // IMPORTANT: no auto-generate on page load.
+  // The UI initializes after ENTER COLLAPSE.
 </script>
 </body>
 </html>
