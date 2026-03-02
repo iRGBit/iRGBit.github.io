@@ -6,145 +6,181 @@
   <title>Design for Collapse (Design Thinking Scenario Generator)</title>
   <meta name="description" content="One-click scenario generator for speculative design: the internet is gone." />
   <style>
-    :root { color-scheme: light; }
-    body {
-      margin: 0;
-      font-family: Verdana, Arial, Helvetica, sans-serif;
-      background: #c7d2e3;
-      color: #111;
-    }
+  :root { color-scheme: light; }
 
-    /* Page frame */
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 14px;
-    }
+  body {
+    margin: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    background:
+      linear-gradient(135deg, #ff2fb2 0%, #ffef00 50%, #cfcfcf 100%);
+    color: #000;
+  }
 
-    /* header */
-    .topbar {
-      background: linear-gradient(#0d2f6f, #081f49);
-      border: 2px solid #000;
-      color: #fff;
-      padding: 10px 12px;
-      box-shadow: 3px 3px 0 #000;
-    }
-    .topbar h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: .3px;
-      text-transform: uppercase;
-    }
-    .topbar .sub {
-      margin-top: 6px;
-      font-size: 12px;
-      opacity: .95;
-    }
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 14px;
+  }
 
-    /* “Table layout” feel using divs */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media (max-width: 860px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+  /* WINAMP HEADER */
+  .topbar {
+    background: linear-gradient(#3a3a3a, #1a1a1a);
+    border: 3px solid #000;
+    color: #ffef00;
+    padding: 10px 12px;
+    box-shadow: 4px 4px 0 #000;
+  }
 
-    .panel {
-      background: #f4f6fb;
-      border: 2px solid #000;
-      box-shadow: 3px 3px 0 #000;
-    }
-    .panel .head {
-      background: #e6ecf7;
-      border-bottom: 2px solid #000;
-      padding: 8px 10px;
-      font-weight: bold;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .2px;
-    }
-    .panel .body {
-      padding: 10px;
-      font-size: 13px;
-    }
+  .topbar h1 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #ff2fb2;
+    text-shadow: 2px 2px 0 #000;
+  }
 
-    .note {
-      background: #fff9c9;
-      border: 1px solid #000;
-      padding: 8px 10px;
-      margin: 10px 0 0;
-      font-size: 12px;
-    }
+  .topbar .sub {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #ffef00;
+  }
 
-    /* Old-school buttons */
-    .btnrow {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin: 10px 0 12px;
-    }
-    button {
-      font-family: Verdana, Arial, Helvetica, sans-serif;
-      font-size: 13px;
-      padding: 8px 10px;
-      border: 2px solid #000;
-      background: linear-gradient(#ffffff, #d9d9d9);
-      cursor: pointer;
-      box-shadow: 2px 2px 0 #000;
-    }
-    button:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 #000; }
-    button:hover { filter: brightness(1.02); }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 14px;
+    margin-top: 14px;
+  }
 
-    .status {
-      font-size: 12px;
-      color: #0d2f6f;
-      font-weight: bold;
-      margin-left: 6px;
-    }
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+  }
 
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 8px 0 10px;
-    }
-    .pill {
-      display: inline-block;
-      background: #fff;
-      border: 1px solid #000;
-      padding: 3px 8px;
-      font-size: 12px;
-      white-space: nowrap;
-    }
+  /* PANEL = Windows 2000 Chrome */
+  .panel {
+    background: #e6e6e6;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0 #000;
+  }
 
-    .scenario {
-      background: #fff;
-      border: 2px dashed #000;
-      padding: 10px;
-      line-height: 1.4;
-      font-size: 14px;
-      white-space: pre-wrap;
-    }
+  .panel .head {
+    background: linear-gradient(90deg, #ff2fb2 0%, #ffef00 100%);
+    border-bottom: 3px solid #000;
+    padding: 8px 10px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #000;
+  }
 
-    .small {
-      font-size: 12px;
-      color: #333;
-      line-height: 1.35;
-    }
+  .panel .body {
+    padding: 10px;
+    font-size: 13px;
+  }
 
-    /* Cute “footer links” vibe */
-    .footer {
-      margin-top: 14px;
-      font-size: 11px;
-      color: #000;
-      text-align: center;
-    }
-    .footer a { color: #081f49; }
-  </style>
+  .note {
+    background: #fff;
+    border: 3px dashed #ff2fb2;
+    padding: 8px 10px;
+    margin: 10px 0 0;
+    font-size: 12px;
+  }
+
+  .btnrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 10px 0 12px;
+  }
+
+  /* WINAMP BUTTONS */
+  button {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 3px solid #000;
+    cursor: pointer;
+    background: linear-gradient(#ffffff, #bfbfbf);
+    box-shadow: 3px 3px 0 #000;
+    font-weight: bold;
+  }
+
+  button.primary {
+    background: linear-gradient(#ffef00, #ff2fb2);
+    color: #000;
+  }
+
+  button.alt {
+    background: linear-gradient(#ffffff, #999999);
+    color: #000;
+  }
+
+  button:hover {
+    filter: brightness(1.1);
+  }
+
+  button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #000;
+  }
+
+  .status {
+    font-size: 12px;
+    color: #ff2fb2;
+    font-weight: bold;
+  }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 10px;
+  }
+
+  .pill {
+    background: #ffffff;
+    border: 2px solid #000;
+    padding: 4px 8px;
+    font-size: 12px;
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  .scenario {
+    background: #ffffff;
+    border: 3px solid #000;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: inset 0 0 0 3px #ffef00;
+    white-space: pre-wrap;
+  }
+
+  .small {
+    font-size: 12px;
+    color: #000;
+  }
+
+  .footer {
+    margin-top: 14px;
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .footer a {
+    background: #ff2fb2;
+    color: #000;
+    padding: 3px 6px;
+    border: 2px solid #000;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .footer a:hover {
+    background: #ffef00;
+  }
+</style>
 </head>
 <body>
   <div class="wrap">
