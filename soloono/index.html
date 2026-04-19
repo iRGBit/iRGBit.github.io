@@ -1,7 +1,7 @@
 export default function SoloOnoSite() {
   const releases = [
     { title: 'Fungibles', year: '2025', note: 'Sharp, riff-heavy recent single with a satirical edge.' },
-    { title([soloono.bandcamp.com](https://soloono.bandcamp.com/music?utm_source=chatgpt.com))urgent track from the band’s NZ-to-Graz chapter.' },
+    { title: 'Look Busy', year: '2023', note: 'Lean, urgent track from the band’s NZ-to-Graz chapter.' },
     { title: 'Lavender EP', year: '2021', note: 'An earlier release showing the melodic/noisy balance in their sound.' },
     { title: 'Rogue Planet EP', year: '2018', note: 'A strong older entry point into Solo Ono’s catalogue.' },
   ];
@@ -14,7 +14,7 @@ export default function SoloOnoSite() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-white selection:text-zinc-950">
       <section className="relative overflow-hidden border-b border-zinc-800">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
@@ -42,7 +42,7 @@ export default function SoloOnoSite() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:px-10">
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-8 shadow-2xl shadow-black/20">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 backdrop-blur-sm shadow-2xl shadow-black/20">
           <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">About</p>
           <h2 className="mt-3 text-2xl font-bold md:text-3xl">Post-punk tension, indie hooks, hemispheres colliding.</h2>
           <p className="mt-5 text-base leading-8 text-zinc-300">
@@ -82,7 +82,7 @@ export default function SoloOnoSite() {
           {releases.map((release) => (
             <div
               key={release.title}
-              className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6 transition hover:-translate-y-1 hover:border-zinc-600"
+              className="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-6 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-zinc-500 hover:shadow-xl hover:shadow-black/20"
             >
               <p className="text-sm text-zinc-500">{release.year}</p>
               <h3 className="mt-2 text-xl font-semibold">{release.title}</h3>
@@ -101,7 +101,7 @@ export default function SoloOnoSite() {
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-2xl border border-zinc-800 px-5 py-4 text-base font-medium text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800/60"
+                className="rounded-2xl border border-zinc-800 px-5 py-4 text-base font-medium text-zinc-200 transition duration-300 hover:border-zinc-500 hover:bg-zinc-800/80"
               >
                 {link.label}
               </a>
