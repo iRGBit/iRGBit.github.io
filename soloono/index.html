@@ -1,0 +1,118 @@
+export default function SoloOnoSite() {
+  const releases = [
+    { title: 'Fungibles', year: '2025', note: 'Sharp, riff-heavy recent single with a satirical edge.' },
+    { title([soloono.bandcamp.com](https://soloono.bandcamp.com/music?utm_source=chatgpt.com))urgent track from the band’s NZ-to-Graz chapter.' },
+    { title: 'Lavender EP', year: '2021', note: 'An earlier release showing the melodic/noisy balance in their sound.' },
+    { title: 'Rogue Planet EP', year: '2018', note: 'A strong older entry point into Solo Ono’s catalogue.' },
+  ];
+
+  const links = [
+    { label: 'Instagram', href: 'https://www.instagram.com/solo_ono_band/' },
+    { label: 'Bandcamp', href: 'https://soloono.bandcamp.com/' },
+    { label: 'FM4 Soundpark', href: 'https://fm4.orf.at/soundpark/s/soloono/main' },
+    { label: 'SoundCloud', href: 'https://soundcloud.com/solo-ono/solo-ono-fungibles' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+      <section className="relative overflow-hidden border-b border-zinc-800">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_30%)]" />
+        <div className="relative mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-zinc-400">Graz / New Zealand</p>
+          <h1 className="max-w-4xl text-5xl font-black tracking-tight md:text-7xl">Solo Ono</h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300 md:text-xl">
+            New Zealand-formed, now based in Graz: Solo Ono make wiry, sharp-edged indie rock with
+            post-punk energy, dark humour, and songs that feel both loose and precise.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="https://soloono.bandcamp.com/"
+              className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:scale-[1.02]"
+            >
+              Listen now
+            </a>
+            <a
+              href="https://www.instagram.com/solo_ono_band/"
+              className="rounded-2xl border border-zinc-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-900"
+            >
+              Follow for gigs
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:px-10">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-8 shadow-2xl shadow-black/20">
+          <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">About</p>
+          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Post-punk tension, indie hooks, hemispheres colliding.</h2>
+          <p className="mt-5 text-base leading-8 text-zinc-300">
+            The band’s current identity sits between Aotearoa/New Zealand roots and a Graz base,
+            with a sound that pushes garage-pop immediacy into something rougher, tighter, and more restless.
+            The result is music that feels handmade, a little feral, and very alive.
+          </p>
+          <p className="mt-5 text-base leading-8 text-zinc-300">
+            This page is built as a quick intro: enough to get the vibe, hear the songs, and find the band online.
+          </p>
+        </div>
+
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-8">
+          <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Featured</p>
+          <h2 className="mt-3 text-2xl font-bold">Fungibles</h2>
+          <p className="mt-4 text-base leading-8 text-zinc-300">
+            Their recent single lands fast and leaves a mark: wiry guitars, momentum, and a satirical bite aimed at tech greed and modern absurdity.
+          </p>
+          <a
+            href="https://soundcloud.com/solo-ono/solo-ono-fungibles"
+            className="mt-6 inline-block rounded-2xl border border-zinc-700 px-5 py-3 text-sm font-semibold transition hover:bg-zinc-800"
+          >
+            Play the single
+          </a>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 pb-8 md:px-10">
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Selected releases</p>
+            <h2 className="mt-2 text-3xl font-bold">Start here</h2>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {releases.map((release) => (
+            <div
+              key={release.title}
+              className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6 transition hover:-translate-y-1 hover:border-zinc-600"
+            >
+              <p className="text-sm text-zinc-500">{release.year}</p>
+              <h3 className="mt-2 text-xl font-semibold">{release.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-zinc-300">{release.note}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-16 md:px-10">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-8">
+          <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Find them</p>
+          <h2 className="mt-3 text-3xl font-bold">Links</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {links.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="rounded-2xl border border-zinc-800 px-5 py-4 text-base font-medium text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800/60"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-zinc-800 px-6 py-8 text-sm text-zinc-500 md:px-10">
+        Quick fan-style one-pager for Solo Ono — built for easy editing and expansion.
+      </footer>
+    </div>
+  );
+}
