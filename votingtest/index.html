@@ -1,47 +1,160 @@
-create table if not exists public.votes (
-  id integer primary key,
-  vanilla integer not null default 0,
-  chocolate integer not null default 0
-);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ice Cream Vote</title>
 
-insert into public.votes (id, vanilla, chocolate)
-values (1, 0, 0)
-on conflict (id) do nothing;
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-alter table public.votes enable row level security;
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: #f8f3ea;
+      color: #2b2b2b;
+    }
 
-create policy "public can read votes"
-on public.votes
-for select
-to anon
-using (true);
+    .card {
+      width: min(92vw, 520px);
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.10);
+      padding: 32px 24px;
+      text-align: center;
+    }
 
-create or replace function public.increment_vote(choice text)
-returns public.votes
-language plpgsql
-security definer
-as $$
-declare
-  updated_row public.votes;
-begin
-  if choice = 'vanilla' then
-    update public.votes
-    set vanilla = vanilla + 1
-    where id = 1
-    returning * into updated_row;
-  elsif choice = 'chocolate' then
-    update public.votes
-    set chocolate = chocolate + 1
-    where id = 1
-    returning * into updated_row;
-  else
-    raise exception 'invalid choice';
-  end if;
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2rem;
+    }
 
-  return updated_row;
-end;
-$$;
+    .sub {
+      margin: 0 0 24px 0;
+      color: #666;
+    }
 
-grant usage on schema public to anon;
-grant select on public.votes to anon;
-grant execute on function public.increment_vote(text) to anon;
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 18px;
+      padding: 18px 28px;
+      min-width: 180px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    #vanillaBtn {
+      background: #f3e5ab;
+      color: #5b4a00;
+    }
+
+    #chocolateBtn {
+      background: #5a3825;
+      color: #ffffff;
+    }
+
+    #result {
+      margin-top: 24px;
+      font-size: 1.35rem;
+      font-weight: bold;
+    }
+
+    #status {
+      margin-top: 10px;
+      min-height: 22px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Ice Cream Vote</h1>
+    <p class="sub">Choose your favorite flavor</p>
+
+    <div class="buttons">
+      <button id="vanillaBtn">Vanilla</button>
+      <button id="chocolateBtn">Chocolate</button>
+    </div>
+
+    <div id="result">Loading...</div>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://hlkfvhzdpxhmkansymxx.supabase.co/rest/v1/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsa2Z2aHpkcHhobWthbnN5bXh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NzU5ODYsImV4cCI6MjA5MjM1MTk4Nn0.XN6fvOCWxqujnRzLs_YUXfiacaIWLlA1VZ4dOv0k_Jk";
+
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const vanillaBtn = document.getElementById("vanillaBtn");
+    const chocolateBtn = document.getElementById("chocolateBtn");
+    const resultEl = document.getElementById("result");
+    const statusEl = document.getElementById("status");
+
+    async function loadVotes() {
+      statusEl.textContent = "";
+
+      const { data, error } = await db
+        .from("votes")
+        .select("vanilla, chocolate")
+        .eq("id", 1)
+        .single();
+
+      if (error) {
+        resultEl.textContent = "Load error";
+        statusEl.textContent = error.message;
+        return;
+      }
+
+      resultEl.textContent = `Vanilla: ${data.vanilla} | Chocolate: ${data.chocolate}`;
+    }
+
+    async function vote(choice) {
+      vanillaBtn.disabled = true;
+      chocolateBtn.disabled = true;
+      statusEl.textContent = "Saving vote...";
+
+      const { data, error } = await db.rpc("increment_vote", { choice });
+
+      vanillaBtn.disabled = false;
+      chocolateBtn.disabled = false;
+
+      if (error) {
+        statusEl.textContent = error.message;
+        return;
+      }
+
+      resultEl.textContent = `Vanilla: ${data.vanilla} | Chocolate: ${data.chocolate}`;
+      statusEl.textContent = "Vote saved!";
+    }
+
+    vanillaBtn.addEventListener("click", () => vote("vanilla"));
+    chocolateBtn.addEventListener("click", () => vote("chocolate"));
+
+    loadVotes();
+  </script>
+</body>
+</html>
