@@ -1,0 +1,47 @@
+create table if not exists public.votes (
+  id integer primary key,
+  vanilla integer not null default 0,
+  chocolate integer not null default 0
+);
+
+insert into public.votes (id, vanilla, chocolate)
+values (1, 0, 0)
+on conflict (id) do nothing;
+
+alter table public.votes enable row level security;
+
+create policy "public can read votes"
+on public.votes
+for select
+to anon
+using (true);
+
+create or replace function public.increment_vote(choice text)
+returns public.votes
+language plpgsql
+security definer
+as $$
+declare
+  updated_row public.votes;
+begin
+  if choice = 'vanilla' then
+    update public.votes
+    set vanilla = vanilla + 1
+    where id = 1
+    returning * into updated_row;
+  elsif choice = 'chocolate' then
+    update public.votes
+    set chocolate = chocolate + 1
+    where id = 1
+    returning * into updated_row;
+  else
+    raise exception 'invalid choice';
+  end if;
+
+  return updated_row;
+end;
+$$;
+
+grant usage on schema public to anon;
+grant select on public.votes to anon;
+grant execute on function public.increment_vote(text) to anon;
