@@ -248,14 +248,10 @@
     let freqData;
     let rafId;
 
-    let noiseFloor = 0.018;
+    let noiseFloor = 0.015;
     let peak = 0;
     let smoothed = 0;
     let calibratingUntil = 0;
-
-    // Rolling history helps separate short noisy blows from sustained screams.
-    const history = [];
-    const HISTORY_SIZE = 18;
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
     const lerp = (a, b, t) => a + (b - a) * t;
@@ -272,8 +268,8 @@
 
         audioContext = new AudioContext();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 2048;
-        analyser.smoothingTimeConstant = 0.18;
+        analyser.fftSize = 1024;
+        analyser.smoothingTimeConstant = 0.15;
 
         micSource = audioContext.createMediaStreamSource(stream);
         micSource.connect(analyser);
@@ -297,132 +293,92 @@
     function resetCalibration() {
       peak = 0;
       smoothed = 0;
-      history.length = 0;
-      calibratingUntil = performance.now() + 1200;
+      calibratingUntil = performance.now() + 1000;
       peakText.textContent = '0%';
       fill.style.width = '0%';
       valueText.textContent = '0%';
       setStatus('Calibrating room noise. Stay quiet for a moment.', 'warn');
     }
 
-    function rmsVolume() {
+    function getVolume() {
       analyser.getFloatTimeDomainData(timeData);
       let sum = 0;
-      for (let i = 0; i < timeData.length; i++) sum += timeData[i] * timeData[i];
+      for (let i = 0; i < timeData.length; i++) {
+        sum += timeData[i] * timeData[i];
+      }
       return Math.sqrt(sum / timeData.length);
     }
 
-    function zeroCrossingRate() {
-      let crossings = 0;
-      for (let i = 1; i < timeData.length; i++) {
-        if ((timeData[i - 1] < 0 && timeData[i] >= 0) || (timeData[i - 1] > 0 && timeData[i] <= 0)) {
-          crossings++;
-        }
-      }
-      return crossings / timeData.length;
-    }
-
-    function spectralCentroidAndBands() {
+    function getNoiseVsVoice() {
       analyser.getByteFrequencyData(freqData);
 
       const nyquist = audioContext.sampleRate / 2;
-      let low = 0, mid = 0, high = 0;
-      let lowCount = 0, midCount = 0, highCount = 0;
-      let weighted = 0, total = 0;
-      let maxBin = 0;
-      let maxValue = 0;
+      let lowMid = 0;
+      let high = 0;
+      let lowMidCount = 0;
+      let highCount = 0;
 
       for (let i = 0; i < freqData.length; i++) {
         const hz = i / freqData.length * nyquist;
-        const v = freqData[i] / 255;
+        const value = freqData[i] / 255;
 
-        weighted += hz * v;
-        total += v;
-
-        if (v > maxValue) {
-          maxValue = v;
-          maxBin = hz;
+        // Speech/screaming usually has a lot of energy here.
+        if (hz >= 120 && hz < 2800) {
+          lowMid += value;
+          lowMidCount++;
         }
 
-        if (hz >= 80 && hz < 700) {
-          low += v;
-          lowCount++;
-        } else if (hz >= 700 && hz < 3000) {
-          mid += v;
-          midCount++;
-        } else if (hz >= 3000 && hz < 10000) {
-          high += v;
+        // Blowing tends to sound more like hiss/noise here.
+        if (hz >= 2800 && hz < 10000) {
+          high += value;
           highCount++;
         }
       }
 
-      low = lowCount ? low / lowCount : 0;
-      mid = midCount ? mid / midCount : 0;
+      lowMid = lowMidCount ? lowMid / lowMidCount : 0;
       high = highCount ? high / highCount : 0;
 
-      const centroid = total ? weighted / total : 0;
-      const tonalPeak = total ? maxValue / (total / freqData.length + 0.0001) : 0;
+      const total = lowMid + high + 0.0001;
+      const noiseRatio = high / total;
+      const voiceRatio = lowMid / total;
 
-      return { low, mid, high, centroid, tonalPeak, maxBin };
-    }
-
-    function pushHistory(frame) {
-      history.push(frame);
-      if (history.length > HISTORY_SIZE) history.shift();
-    }
-
-    function avg(key) {
-      if (!history.length) return 0;
-      return history.reduce((sum, item) => sum + item[key], 0) / history.length;
+      return { noiseRatio, voiceRatio, lowMid, high };
     }
 
     function tick() {
       const now = performance.now();
-      const raw = rmsVolume();
-      const zcr = zeroCrossingRate();
-      const { low, mid, high, centroid, tonalPeak } = spectralCentroidAndBands();
+      const volume = getVolume();
+      const { noiseRatio, voiceRatio, lowMid, high } = getNoiseVsVoice();
 
       if (now < calibratingUntil) {
-        noiseFloor = lerp(noiseFloor, raw * 1.9, 0.08);
+        noiseFloor = lerp(noiseFloor, volume * 1.8, 0.08);
       }
 
-      const loudness = clamp((raw - noiseFloor) / 0.20, 0, 1);
-      const highRatio = high / (low + mid + high + 0.0001);
-      const voiceRatio = (low + mid) / (low + mid + high + 0.0001);
+      // Important: loudness is NOT used to reject screams.
+      // Close blowing can be louder than screaming, so volume only controls strength.
+      const volumeStrength = clamp((volume - noiseFloor) / 0.22, 0, 1);
 
-      // Blow profile: broadband, airy, higher centroid, more high-frequency energy,
-      // and a higher zero-crossing rate. Speech/screaming is usually more tonal
-      // and has stronger low/mid energy.
-      const noisyAir = clamp((zcr - 0.055) / 0.12, 0, 1);
-      const brightNoise = clamp((centroid - 2300) / 4200, 0, 1);
-      const highFrequencyBias = clamp((highRatio - 0.26) / 0.34, 0, 1);
-      const blowLikelihood = clamp((noisyAir * 0.35) + (brightNoise * 0.35) + (highFrequencyBias * 0.30), 0, 1);
+      // Very simple filter:
+      // If there is more high-frequency hiss than low/mid voice energy, treat it as blowing.
+      // If low/mid dominates, treat it as speech/scream and reduce the value.
+      const looksLikeBlow = noiseRatio > 0.42;
+      const looksLikeVoice = voiceRatio > 0.62;
 
-      // Scream profile: loud, sustained, tonal/voiced, low-to-mid dominant.
-      // This intentionally blocks rather than merely reducing the bar.
-      pushHistory({ loudness, voiceRatio, blowLikelihood, raw });
-      const sustainedLoudness = avg('loudness');
-      const sustainedVoice = avg('voiceRatio');
-      const sustainedBlow = avg('blowLikelihood');
+      let strength = volumeStrength;
 
-      const tonalVoice = tonalPeak > 10 && voiceRatio > 0.58;
-      const screamLike = sustainedLoudness > 0.42 && sustainedVoice > 0.60 && sustainedBlow < 0.55 && tonalVoice;
-      const speechLike = loudness > 0.12 && voiceRatio > 0.66 && blowLikelihood < 0.45;
+      if (looksLikeVoice && !looksLikeBlow) {
+        strength *= 0.15;
+      }
 
-      let strength = 0;
-      if (!screamLike) {
-        strength = loudness * (0.15 + blowLikelihood * 1.45);
-        if (speechLike) strength *= 0.22;
+      if (looksLikeBlow) {
+        strength *= 1.15;
       }
 
       strength = clamp(strength, 0, 1);
 
-      // Smooth up quickly and down slowly for a nicer bar.
-      const smoothSpeed = strength > smoothed ? 0.35 : 0.12;
-      smoothed = lerp(smoothed, strength, smoothSpeed);
-
-      // Hard fade when scream-like input is detected.
-      if (screamLike) smoothed = lerp(smoothed, 0, 0.65);
+      // Smooth the bar so it feels nicer.
+      const speed = strength > smoothed ? 0.35 : 0.14;
+      smoothed = lerp(smoothed, strength, speed);
 
       peak = Math.max(peak, smoothed);
 
@@ -432,42 +388,34 @@
       fill.style.width = percent + '%';
       valueText.textContent = percent + '%';
       peakText.textContent = peakPercent + '%';
-      rawText.textContent = raw.toFixed(3);
+      rawText.textContent = volume.toFixed(3);
 
       if (now < calibratingUntil) {
         modeText.textContent = 'calibrating';
-      } else if (screamLike) {
-        modeText.textContent = 'scream';
-        setStatus('Loud voiced sound blocked. This looks more like screaming than blowing.', 'warn');
-      } else if (speechLike) {
-        modeText.textContent = 'voice?';
-        setStatus('Voice-like sound reduced. Try blowing with less vocal sound.', 'warn');
-      } else if (percent > 20) {
-        modeText.textContent = 'blow!';
-        setStatus('Blow detected. Use this value for interaction output.', 'good');
+      } else if (looksLikeVoice && !looksLikeBlow && volumeStrength > 0.08) {
+        modeText.textContent = 'voice';
+        setStatus('Voice-like sound reduced. Loudness itself is not blocked.', 'warn');
+      } else if (percent > 15) {
+        modeText.textContent = 'blow';
+        setStatus('Blow/noise detected.', 'good');
       } else {
         modeText.textContent = 'listening';
       }
 
-      // Value to send elsewhere. Ranges from 0 to 1.
+      // Send/use this value elsewhere. Range: 0 to 1.
       window.currentBlowStrength = smoothed;
 
-      // Optional debugging values, useful while tuning for your specific mic/device.
+      // Tiny debug object for tuning thresholds if needed.
       window.blowDebug = {
-        raw,
+        volume,
         noiseFloor,
-        loudness,
-        zcr,
-        low,
-        mid,
-        high,
-        highRatio,
+        volumeStrength,
+        noiseRatio,
         voiceRatio,
-        centroid,
-        tonalPeak,
-        blowLikelihood,
-        screamLike,
-        speechLike
+        lowMid,
+        high,
+        looksLikeBlow,
+        looksLikeVoice
       };
 
       rafId = requestAnimationFrame(tick);
